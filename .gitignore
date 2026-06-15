@@ -1,69 +1,28 @@
-# Prerequisites
-*.d
+# Unreal Engine
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
 
-# Precompiled Headers
-*.gch
-*.pch
+# Visual Studio
 
-# Linker files
-*.ilk
+.vs/
+*.VC.db
+*.VC.opendb
+*.suo
 
-# Debugger Files
-*.pdb
+# Rider
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-*.so.*
+.idea/
 
+# Build files
 
-# Fortran module files
-*.mod
-*.smod
+*.xcodeproj
+*.xcworkspace
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# OS files
 
-# Executables
-*.exe
-*.out
-*.app
-
-# Build directories
-build/
-Build/
-build-*/
-
-# CMake generated files
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-install_manifest.txt
-compile_commands.json
-
-# Temporary files
-*.tmp
-*.log
-*.bak
-*.swp
-
-# vcpkg
-vcpkg_installed/
-
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
-.cache/
+.DS_Store
+Thumbs.db
+desktop.ini
