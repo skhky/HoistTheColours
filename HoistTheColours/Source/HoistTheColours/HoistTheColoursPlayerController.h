@@ -80,6 +80,10 @@ protected:
 
 	/** Helper function to get the move destination */
 	void UpdateCachedDestination();
+
+	/** WASD movement callbacks (legacy axis bindings) */
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 };
 
 

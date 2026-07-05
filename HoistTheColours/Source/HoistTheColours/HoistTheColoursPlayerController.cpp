@@ -13,6 +13,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "HoistTheColours.h"
+#include "Components/InputComponent.h"
 
 AHoistTheColoursPlayerController::AHoistTheColoursPlayerController()
 {
@@ -61,6 +62,13 @@ void AHoistTheColoursPlayerController::SetupInputComponent()
 		else
 		{
 			UE_LOG(LogHoistTheColours, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		}
+
+		// Legacy axis bindings for WASD movement (ensure Project Settings axis names match these)
+		if (InputComponent)
+		{
+			InputComponent->BindAxis(TEXT("MoveForward"), this, &AHoistTheColoursPlayerController::MoveForward);
+			InputComponent->BindAxis(TEXT("MoveRight"), this, &AHoistTheColoursPlayerController::MoveRight);
 		}
 	}
 }
@@ -135,4 +143,46 @@ void AHoistTheColoursPlayerController::UpdateCachedDestination()
 	{
 		CachedDestination = Hit.Location;
 	}
+}
+
+void AHoistTheColoursPlayerController::MoveForward(float Value)
+{
+	if (FMath::IsNearlyZero(Value))
+	{
+		return;
+	}
+
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn == nullptr)
+	{
+		return;
+	}
+
+	// Move relative to controller yaw (so WASD follow camera/controller orientation)
+	const FRotator Rotation = GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	ControlledPawn->AddMovementInput(Direction, Value);
+}
+
+void AHoistTheColoursPlayerController::MoveRight(float Value)
+{
+	if (FMath::IsNearlyZero(Value))
+	{
+		return;
+	}
+
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn == nullptr)
+	{
+		return;
+	}
+
+	// Move relative to controller yaw (so WASD follow camera/controller orientation)
+	const FRotator Rotation = GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	ControlledPawn->AddMovementInput(Direction, Value);
 }
