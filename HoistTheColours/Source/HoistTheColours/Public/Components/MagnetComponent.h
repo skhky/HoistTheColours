@@ -140,11 +140,11 @@ public:
 
 	/** 磁力範囲をデバッグ表示する */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet|Debug")
-	bool bDrawDebug = false;
+	bool bDrawDebug = true;
 
 	/** デバッグ表示時間 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet|Debug")
-	float DebugDrawTime = 0.1f;
+	float DebugDrawTime = 0.05f;
 
 
 protected:

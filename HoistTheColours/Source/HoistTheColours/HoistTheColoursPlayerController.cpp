@@ -14,16 +14,15 @@
 #include "Engine/LocalPlayer.h"
 #include "HoistTheColours.h"
 #include "Components/InputComponent.h"
+#include "Components/MagnetComponent.h"
 
 AHoistTheColoursPlayerController::AHoistTheColoursPlayerController()
 {
 	bIsTouch = false;
 	bMoveToMouseCursor = false;
 
-	// create the path following comp
 	PathFollowingComponent = CreateDefaultSubobject<UPathFollowingComponent>(TEXT("Path Following Component"));
 
-	// configure the controller
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
@@ -32,28 +31,23 @@ AHoistTheColoursPlayerController::AHoistTheColoursPlayerController()
 
 void AHoistTheColoursPlayerController::SetupInputComponent()
 {
-	// set up gameplay key bindings
 	Super::SetupInputComponent();
 
-	// Only set up input on local player controllers
 	if (IsLocalPlayerController())
 	{
-		// Add Input Mapping Context
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 
-		// Set up action bindings
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 		{
-			// Setup mouse input events
+
 			EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AHoistTheColoursPlayerController::OnInputStarted);
 			EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AHoistTheColoursPlayerController::OnSetDestinationTriggered);
 			EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AHoistTheColoursPlayerController::OnSetDestinationReleased);
 			EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AHoistTheColoursPlayerController::OnSetDestinationReleased);
 
-			// Setup touch input events
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AHoistTheColoursPlayerController::OnInputStarted);
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AHoistTheColoursPlayerController::OnTouchTriggered);
 			EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AHoistTheColoursPlayerController::OnTouchReleased);
@@ -64,11 +58,11 @@ void AHoistTheColoursPlayerController::SetupInputComponent()
 			UE_LOG(LogHoistTheColours, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 		}
 
-		// Legacy axis bindings for WASD movement (ensure Project Settings axis names match these)
 		if (InputComponent)
 		{
 			InputComponent->BindAxis(TEXT("MoveForward"), this, &AHoistTheColoursPlayerController::MoveForward);
 			InputComponent->BindAxis(TEXT("MoveRight"), this, &AHoistTheColoursPlayerController::MoveRight);
+			InputComponent->BindAxis(TEXT("ActionPolarity"), this, &AHoistTheColoursPlayerController::ActionPolarity);
 		}
 	}
 }
@@ -76,20 +70,15 @@ void AHoistTheColoursPlayerController::SetupInputComponent()
 void AHoistTheColoursPlayerController::OnInputStarted()
 {
 	StopMovement();
-
-	// Update the move destination to wherever the cursor is pointing at
 	UpdateCachedDestination();
 }
 
 void AHoistTheColoursPlayerController::OnSetDestinationTriggered()
 {
-	// We flag that the input is being pressed
 	FollowTime += GetWorld()->GetDeltaSeconds();
 	
-	// Update the move destination to wherever the cursor is pointing at
 	UpdateCachedDestination();
 	
-	// Move towards mouse pointer or touch
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn != nullptr)
 	{
@@ -100,10 +89,8 @@ void AHoistTheColoursPlayerController::OnSetDestinationTriggered()
 
 void AHoistTheColoursPlayerController::OnSetDestinationReleased()
 {
-	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
 	{
-		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
@@ -111,7 +98,6 @@ void AHoistTheColoursPlayerController::OnSetDestinationReleased()
 	FollowTime = 0.f;
 }
 
-// Triggered every frame when the input is held down
 void AHoistTheColoursPlayerController::OnTouchTriggered()
 {
 	bIsTouch = true;
@@ -126,7 +112,6 @@ void AHoistTheColoursPlayerController::OnTouchReleased()
 
 void AHoistTheColoursPlayerController::UpdateCachedDestination()
 {
-	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bool bHitSuccessful = false;
 	if (bIsTouch)
@@ -138,7 +123,6 @@ void AHoistTheColoursPlayerController::UpdateCachedDestination()
 		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
 	}
 
-	// If we hit a surface, cache the location
 	if (bHitSuccessful)
 	{
 		CachedDestination = Hit.Location;
@@ -158,7 +142,6 @@ void AHoistTheColoursPlayerController::MoveForward(float Value)
 		return;
 	}
 
-	// Move relative to controller yaw (so WASD follow camera/controller orientation)
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 
@@ -179,10 +162,33 @@ void AHoistTheColoursPlayerController::MoveRight(float Value)
 		return;
 	}
 
-	// Move relative to controller yaw (so WASD follow camera/controller orientation)
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	ControlledPawn->AddMovementInput(Direction, Value);
+}
+
+void AHoistTheColoursPlayerController::ActionPolarity(float value)
+{
+	const float DeadZone = 0.1f;
+	if (FMath::Abs(value) < DeadZone)
+	{
+		return;
+	}
+
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn == nullptr)
+	{
+		return;
+	}
+
+	UMagnetComponent* Magnet = ControlledPawn->FindComponentByClass<UMagnetComponent>();
+	if (Magnet == nullptr)
+	{
+		return;
+	}
+
+	auto changePolarity = Magnet->Polarity == EMagnetPolarity::North ? EMagnetPolarity::South : EMagnetPolarity::North;
+	Magnet->SetPolarity(changePolarity);
 }

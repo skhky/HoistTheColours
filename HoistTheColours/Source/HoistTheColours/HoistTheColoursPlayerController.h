@@ -17,6 +17,7 @@ class AHoistTheColoursPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
+
 	UPROPERTY(VisibleDefaultsOnly, Category = AI)
 	TObjectPtr<UPathFollowingComponent> PathFollowingComponent;
 
@@ -59,6 +60,7 @@ protected:
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void ActionPolarity(float Value);
 };
 
 
