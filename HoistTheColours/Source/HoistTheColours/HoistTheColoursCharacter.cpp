@@ -10,6 +10,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 
 AHoistTheColoursCharacter::AHoistTheColoursCharacter()
 {
@@ -51,12 +53,35 @@ void AHoistTheColoursCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// stub
+	if (PlayerHUDClass)
+	{
+		PlayerHUD = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDClass);
+
+		if (PlayerHUD)
+		{
+			PlayerHUD->AddToViewport();
+		}
+	}
+
+	if (UWidget* Found = PlayerHUD->GetWidgetFromName(TEXT("UpperMagnetText")))
+	{
+		if (UTextBlock* TextBlock = Cast<UTextBlock>(Found))
+		{
+			TextBlock->SetText(FText::FromString(TEXT("HOGE"))); // ‚Ü‚½‚Í "S"
+		}
+	}
 }
 
 void AHoistTheColoursCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
+}
 
-	// stub
+UTextBlock* AHoistTheColoursCharacter::GetPlayerHUDTextBlock(const FName& TextBlockName) const
+{
+	if (UWidget* Found = PlayerHUD->GetWidgetFromName(TextBlockName))
+	{
+		return  Cast<UTextBlock>(Found);
+	}
+	return nullptr;
 }
