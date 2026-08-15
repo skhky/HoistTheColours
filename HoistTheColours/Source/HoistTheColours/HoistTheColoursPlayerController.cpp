@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "HoistTheColoursPlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
@@ -36,7 +34,6 @@ void AHoistTheColoursPlayerController::SetupInputComponent()
 		}
 	}
 }
-
 
 //------------------------------------------------------------------------------
 // Action
