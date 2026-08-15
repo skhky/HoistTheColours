@@ -101,4 +101,6 @@ void UJusticeVotingWidget::SelectJustice(
     PC->Server_SelectJustice(
         ChoiceIndex
     );
+
+    RemoveFromParent();
 }

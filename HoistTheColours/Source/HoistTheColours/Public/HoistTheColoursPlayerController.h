@@ -4,6 +4,15 @@
 #include "GameFramework/PlayerController.h"
 #include "HoistTheColoursPlayerController.generated.h"
 
+// ========================================
+// 前方宣言
+// ========================================
+
+class UJusticeSecretWidget;
+class UJusticeVotingWidget;
+class UJusticeResultWidget;
+
+
 UCLASS()
 class HOISTTHECOLOURS_API AHoistTheColoursPlayerController
     : public APlayerController
@@ -13,7 +22,7 @@ class HOISTTHECOLOURS_API AHoistTheColoursPlayerController
 public:
 
     // ========================================
-    // サーバーから本人だけに秘密を送る
+    // 正義の秘密
     // ========================================
 
     UFUNCTION(Client, Reliable)
@@ -23,7 +32,7 @@ public:
 
 
     // ========================================
-    // プレイヤーの投票
+    // 正義の選択
     // ========================================
 
     UFUNCTION(Server, Reliable)
@@ -31,22 +40,67 @@ public:
         int32 ChoiceIndex
     );
 
+
+    // ========================================
+    // 投票UI
+    // ========================================
+
     UFUNCTION(Client, Reliable)
     void Client_ShowVoting();
 
+
     // ========================================
-    // UI
+    // 結果UI
     // ========================================
-    UPROPERTY(EditDefaultsOnly, Category = "Justice UI")
-    TSubclassOf<class UJusticeSecretWidget> JusticeSecretWidgetClass;
+
+    UFUNCTION(Client, Reliable)
+    void Client_ShowJusticeResult();
+
+
+    // ========================================
+    // 秘密UI
+    // ========================================
+
+    UPROPERTY(
+        EditDefaultsOnly,
+        Category = "Justice UI"
+    )
+    TSubclassOf<UJusticeSecretWidget>
+        JusticeSecretWidgetClass;
 
     UPROPERTY()
-    class UJusticeSecretWidget* JusticeSecretWidget;
+    UJusticeSecretWidget*
+        JusticeSecretWidget;
 
 
-    UPROPERTY(EditDefaultsOnly, Category = "Justice UI")
-    TSubclassOf<class UJusticeVotingWidget> JusticeVotingWidgetClass;
+    // ========================================
+    // 投票UI
+    // ========================================
+
+    UPROPERTY(
+        EditDefaultsOnly,
+        Category = "Justice UI"
+    )
+    TSubclassOf<UJusticeVotingWidget>
+        JusticeVotingWidgetClass;
 
     UPROPERTY()
-    class UJusticeVotingWidget* JusticeVotingWidget;
+    UJusticeVotingWidget*
+        JusticeVotingWidget;
+
+
+    // ========================================
+    // 結果UI
+    // ========================================
+
+    UPROPERTY(
+        EditDefaultsOnly,
+        Category = "Justice UI"
+    )
+    TSubclassOf<UJusticeResultWidget>
+        JusticeResultWidgetClass;
+
+    UPROPERTY()
+    UJusticeResultWidget*
+        JusticeResultWidget;
 };

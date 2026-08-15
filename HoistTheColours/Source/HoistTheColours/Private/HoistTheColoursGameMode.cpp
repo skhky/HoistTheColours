@@ -63,7 +63,6 @@ void AHoistTheColoursGameMode::PostLogin(
         return;
     }
 
-
     // プレイヤーが参加したので秘密を配る
     AssignJusticeSecret(NewPlayer);
 }
@@ -95,7 +94,6 @@ void AHoistTheColoursGameMode::BeginPlay()
         TEXT("========================================")
     );
 
-
     StartDiscussionPhase();
 }
 
@@ -122,10 +120,8 @@ void AHoistTheColoursGameMode::SetJusticePhase(
         return;
     }
 
-
     // フェーズを変更
     GS->CurrentPhase = NewPhase;
-
 
     UE_LOG(
         LogTemp,
@@ -134,6 +130,7 @@ void AHoistTheColoursGameMode::SetJusticePhase(
         static_cast<int32>(NewPhase)
     );
 }
+
 
 // ========================================
 // Discussion
@@ -145,13 +142,11 @@ void AHoistTheColoursGameMode::StartDiscussionPhase()
         EJusticePhase::Discussion
     );
 
-
     UE_LOG(
         LogTemp,
         Warning,
         TEXT("Discussion Phase Started")
     );
-
 
     GetWorldTimerManager().SetTimer(
         PhaseTimerHandle,
@@ -173,277 +168,130 @@ void AHoistTheColoursGameMode::StartVotingPhase()
         EJusticePhase::Voting
     );
 
-
     UE_LOG(
         LogTemp,
         Warning,
         TEXT("Voting Phase Started")
     );
 
-    for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+
+    // ========================================
+    // 全プレイヤーに投票UIを表示
+    // ========================================
+
+    for (
+        FConstPlayerControllerIterator It =
+        GetWorld()->GetPlayerControllerIterator();
+        It;
+        ++It
+        )
     {
         AHoistTheColoursPlayerController* PC =
-            Cast<AHoistTheColoursPlayerController>(It->Get());
+            Cast<AHoistTheColoursPlayerController>(
+                It->Get()
+            );
 
         if (PC)
         {
             PC->Client_ShowVoting();
         }
     }
-
-    // 投票開始
-    // ここではタイマーを設定しない
-    //
-    // 4人全員が投票したら
-    // CheckVotes()
-    // ↓
-    // FinishVoting()
-    // ↓
-    // Result
 }
 
 
 // ========================================
-// 投票確認
+// 正義の選択確認
 // ========================================
-
-void AHoistTheColoursGameMode::CheckVotes()
-{
-    int32 VoteCounts[3] =
-    {
-        0,
-        0,
-        0
-    };
-
-
-    int32 VotedPlayerCount = 0;
-
-
-    // ========================================
-    // 全プレイヤーの投票を確認
-    // ========================================
-
-    for (APlayerState* PlayerState :
-        GameState->PlayerArray)
-    {
-        AHoistTheColoursPlayerState* JusticePS =
-            Cast<AHoistTheColoursPlayerState>(
-                PlayerState
-            );
-
-
-        if (!JusticePS)
-        {
-            continue;
-        }
-
-
-        // 投票していなければ無視
-        if (!JusticePS->bHasVoted)
-        {
-            continue;
-        }
-
-
-        // A / B / C
-        if (
-            JusticePS->SelectedChoice >= 0 &&
-            JusticePS->SelectedChoice < 3
-            )
-        {
-            VoteCounts[
-                JusticePS->SelectedChoice
-            ]++;
-
-            VotedPlayerCount++;
-        }
-    }
-
-
-    // ========================================
-    // プレイヤー人数
-    // ========================================
-
-    const int32 PlayerCount =
-        GameState->PlayerArray.Num();
-
-
-    // ========================================
-    // 全員投票していなければ終了しない
-    // ========================================
-
-    if (VotedPlayerCount < PlayerCount)
-    {
-        return;
-    }
-
-
-    // ========================================
-    // 一番票が多い選択肢を探す
-    // ========================================
-
-    int32 WinningChoice = 0;
-
-
-    for (int32 i = 1; i < 3; ++i)
-    {
-        if (
-            VoteCounts[i] >
-            VoteCounts[WinningChoice]
-            )
-        {
-            WinningChoice = i;
-        }
-    }
-
-
-    // ========================================
-    // GameStateを取得
-    // ========================================
-
-    AHoistTheColoursGameState* GS =
-        GetGameState<AHoistTheColoursGameState>();
-
-
-    if (GS)
-    {
-        // 結果を保存
-        GS->WinningChoice =
-            WinningChoice;
-    }
-
-
-    // ========================================
-    // デバッグログ
-    // ========================================
-
-    UE_LOG(
-        LogTemp,
-        Warning,
-        TEXT(
-            "Voting Result: A=%d B=%d C=%d"
-        ),
-        VoteCounts[0],
-        VoteCounts[1],
-        VoteCounts[2]
-    );
-
-
-    UE_LOG(
-        LogTemp,
-        Warning,
-        TEXT(
-            "Winning Choice: %d"
-        ),
-        WinningChoice
-    );
-
-
-    // 投票終了
-    FinishVoting();
-}
-
-
-// ========================================
-// 投票終了
-// ========================================
-
-void AHoistTheColoursGameMode::FinishVoting()
-{
-    UE_LOG(
-        LogTemp,
-        Warning,
-        TEXT("Voting Finished")
-    );
-
-
-    // Resultフェーズへ
-    StartResultPhase();
-}
-
-
-// ========================================
-// Result
-// ========================================
-
-void AHoistTheColoursGameMode::StartResultPhase()
-{
-    SetJusticePhase(
-        EJusticePhase::Result
-    );
-
-
-    UE_LOG(
-        LogTemp,
-        Warning,
-        TEXT("Result Phase Started")
-    );
-
-
-    // 現在はテスト用に10秒
-    GetWorldTimerManager().SetTimer(
-        PhaseTimerHandle,
-        this,
-        &AHoistTheColoursGameMode::StartDiscussionPhase,
-        10.0f,
-        false
-    );
-}
 
 void AHoistTheColoursGameMode::CheckJusticeChoices()
 {
-    UWorld* World = GetWorld();
+    UWorld* World =
+        GetWorld();
 
     if (!World)
     {
         return;
     }
 
+
     int32 PlayerCount = 0;
+
     int32 SelectedCount = 0;
 
-    for (FConstPlayerControllerIterator It =
+
+    // ========================================
+    // 全プレイヤーを確認
+    // ========================================
+
+    for (
+        FConstPlayerControllerIterator It =
         World->GetPlayerControllerIterator();
         It;
-        ++It)
+        ++It
+        )
     {
         AHoistTheColoursPlayerController* PC =
-            Cast<AHoistTheColoursPlayerController>(It->Get());
+            Cast<AHoistTheColoursPlayerController>(
+                It->Get()
+            );
 
         if (!PC)
         {
             continue;
         }
 
+
         AHoistTheColoursPlayerState* PS =
-            PC->GetPlayerState<AHoistTheColoursPlayerState>();
+            PC->GetPlayerState<
+            AHoistTheColoursPlayerState
+            >();
 
         if (!PS)
         {
             continue;
         }
 
+
         PlayerCount++;
 
-        if (PS->SelectedJusticeChoice >= 0 &&
-            PS->SelectedJusticeChoice <= 2)
+
+        // ========================================
+        // 選択済みか確認
+        // ========================================
+
+        if (
+            PS->SelectedJusticeChoice >= 0 &&
+            PS->SelectedJusticeChoice <= 2
+            )
         {
             SelectedCount++;
         }
     }
 
+
+    // ========================================
+    // デバッグ
+    // ========================================
+
     UE_LOG(
         LogTemp,
         Warning,
-        TEXT("Justice Choices : %d / %d"),
+        TEXT(
+            "Justice Choices : %d / %d"
+        ),
         SelectedCount,
         PlayerCount
     );
 
+
+    // ========================================
     // 全員選択完了
-    if (PlayerCount > 0 &&
-        SelectedCount == PlayerCount)
+    // ========================================
+
+    if (
+        PlayerCount > 0 &&
+        SelectedCount == PlayerCount
+        )
     {
         UE_LOG(
             LogTemp,
@@ -462,8 +310,200 @@ void AHoistTheColoursGameMode::CheckJusticeChoices()
             Warning,
             TEXT("========================================")
         );
+
+
+        // ========================================
+        // 正義の結果を計算
+        // ========================================
+
+        CalculateJusticeResult();
+
+
+        // ========================================
+        // 全員に結果UIを表示
+        // ========================================
+
+        for (
+            FConstPlayerControllerIterator It =
+            World->GetPlayerControllerIterator();
+            It;
+            ++It
+            )
+        {
+            AHoistTheColoursPlayerController* PC =
+                Cast<AHoistTheColoursPlayerController>(
+                    It->Get()
+                );
+
+            if (PC)
+            {
+                PC->Client_ShowJusticeResult();
+            }
+        }
     }
 }
+
+
+// ========================================
+// 正義の結果を計算
+// ========================================
+
+void AHoistTheColoursGameMode::CalculateJusticeResult()
+{
+    int32 ChoiceCounts[3] =
+    {
+        0,
+        0,
+        0
+    };
+
+
+    UWorld* World =
+        GetWorld();
+
+    if (!World)
+    {
+        return;
+    }
+
+
+    // ========================================
+    // 全プレイヤーの選択を集計
+    // ========================================
+
+    for (
+        FConstPlayerControllerIterator It =
+        World->GetPlayerControllerIterator();
+        It;
+        ++It
+        )
+    {
+        AHoistTheColoursPlayerController* PC =
+            Cast<AHoistTheColoursPlayerController>(
+                It->Get()
+            );
+
+        if (!PC)
+        {
+            continue;
+        }
+
+
+        AHoistTheColoursPlayerState* PS =
+            PC->GetPlayerState<
+            AHoistTheColoursPlayerState
+            >();
+
+        if (!PS)
+        {
+            continue;
+        }
+
+
+        const int32 Choice =
+            PS->SelectedJusticeChoice;
+
+
+        if (
+            Choice >= 0 &&
+            Choice <= 2
+            )
+        {
+            ChoiceCounts[Choice]++;
+        }
+    }
+
+
+    // ========================================
+    // 最多の選択肢を決定
+    // ========================================
+
+    int32 WinningChoice = 0;
+
+
+    for (
+        int32 i = 1;
+        i < 3;
+        ++i
+        )
+    {
+        if (
+            ChoiceCounts[i] >
+            ChoiceCounts[WinningChoice]
+            )
+        {
+            WinningChoice = i;
+        }
+    }
+
+
+    // ========================================
+    // GameStateに結果を保存
+    // ========================================
+
+    AHoistTheColoursGameState* GS =
+        GetGameState<
+        AHoistTheColoursGameState
+        >();
+
+    if (GS)
+    {
+        GS->WinningChoice =
+            WinningChoice;
+    }
+
+
+    // ========================================
+    // デバッグログ
+    // ========================================
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("========================================")
+    );
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Justice Result")
+    );
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Choice 0 : %d"),
+        ChoiceCounts[0]
+    );
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Choice 1 : %d"),
+        ChoiceCounts[1]
+    );
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Choice 2 : %d"),
+        ChoiceCounts[2]
+    );
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Winning Choice : %d"),
+        WinningChoice
+    );
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("========================================")
+    );
+}
+
 
 // ========================================
 // 正義の秘密を割り当てる
@@ -536,7 +576,9 @@ void AHoistTheColoursGameMode::AssignJusticeSecret(
     // 秘密が存在するか
     // ========================================
 
-    if (JusticeSecretTexts.Num() == 0)
+    if (
+        JusticeSecretTexts.Num() == 0
+        )
     {
         UE_LOG(
             LogTemp,

@@ -8,7 +8,8 @@
 class APlayerController;
 
 UCLASS()
-class HOISTTHECOLOURS_API AHoistTheColoursGameMode : public AGameModeBase
+class HOISTTHECOLOURS_API AHoistTheColoursGameMode
+    : public AGameModeBase
 {
     GENERATED_BODY()
 
@@ -16,15 +17,21 @@ public:
 
     AHoistTheColoursGameMode();
 
-    virtual void PostLogin(APlayerController* NewPlayer) override;
+    virtual void PostLogin(
+        APlayerController* NewPlayer
+    ) override;
+
 
     // ========================================
-    // 投票 (public so PlayerController can invoke CheckVotes)
+    // 正義の選択
     // ========================================
 
-    void CheckVotes();
+    // 全員が選択したか確認
+    void CheckJusticeChoices();
 
-    void FinishVoting();
+    // 選択結果を集計
+    void CalculateJusticeResult();
+
 
 protected:
 
@@ -35,16 +42,14 @@ protected:
     // ゲームフェーズ
     // ========================================
 
-    void SetJusticePhase(EJusticePhase NewPhase);
+    void SetJusticePhase(
+        EJusticePhase NewPhase
+    );
 
     void StartDiscussionPhase();
 
     void StartVotingPhase();
 
-    void StartResultPhase();
-
-public:
-    void CheckJusticeChoices();
 
     // ========================================
     // タイマー
@@ -57,19 +62,30 @@ public:
     // 正義の秘密
     // ========================================
 
-    void AssignJusticeSecret(APlayerController* NewPlayer);
+    void AssignJusticeSecret(
+        APlayerController* NewPlayer
+    );
 
 
-    // 4人分の秘密
+    // ========================================
+    // 秘密一覧
+    // ========================================
+
     UPROPERTY()
     TArray<FText> JusticeSecretTexts;
 
 
+    // ========================================
     // 使用済み秘密番号
+    // ========================================
+
     UPROPERTY()
     TArray<int32> UsedSecretIndices;
 
 
-    // 現在何人に秘密を配ったか
+    // ========================================
+    // 秘密を配った人数
+    // ========================================
+
     int32 AssignedPlayerCount = 0;
 };
