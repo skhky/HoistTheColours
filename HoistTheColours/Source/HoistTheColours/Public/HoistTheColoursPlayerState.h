@@ -22,6 +22,8 @@ public:
     UPROPERTY(Replicated, BlueprintReadOnly)
     int32 SelectedChoice = -1;
 
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Justice")
+    int32 SelectedJusticeChoice = -1;
 protected:
 
     virtual void GetLifetimeReplicatedProps(

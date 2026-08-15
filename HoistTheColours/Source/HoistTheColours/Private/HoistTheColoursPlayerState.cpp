@@ -8,4 +8,5 @@ void AHoistTheColoursPlayerState::GetLifetimeReplicatedProps(
 
     DOREPLIFETIME(AHoistTheColoursPlayerState, bHasVoted);
     DOREPLIFETIME(AHoistTheColoursPlayerState, SelectedChoice);
+    DOREPLIFETIME(AHoistTheColoursPlayerState, SelectedJusticeChoice);
 }

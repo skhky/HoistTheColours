@@ -153,12 +153,11 @@ void AHoistTheColoursGameMode::StartDiscussionPhase()
     );
 
 
-    // 3分間
     GetWorldTimerManager().SetTimer(
         PhaseTimerHandle,
         this,
         &AHoistTheColoursGameMode::StartVotingPhase,
-        180.0f,
+        10.0f,
         false
     );
 }
@@ -181,6 +180,16 @@ void AHoistTheColoursGameMode::StartVotingPhase()
         TEXT("Voting Phase Started")
     );
 
+    for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+    {
+        AHoistTheColoursPlayerController* PC =
+            Cast<AHoistTheColoursPlayerController>(It->Get());
+
+        if (PC)
+        {
+            PC->Client_ShowVoting();
+        }
+    }
 
     // 投票開始
     // ここではタイマーを設定しない
@@ -382,6 +391,79 @@ void AHoistTheColoursGameMode::StartResultPhase()
     );
 }
 
+void AHoistTheColoursGameMode::CheckJusticeChoices()
+{
+    UWorld* World = GetWorld();
+
+    if (!World)
+    {
+        return;
+    }
+
+    int32 PlayerCount = 0;
+    int32 SelectedCount = 0;
+
+    for (FConstPlayerControllerIterator It =
+        World->GetPlayerControllerIterator();
+        It;
+        ++It)
+    {
+        AHoistTheColoursPlayerController* PC =
+            Cast<AHoistTheColoursPlayerController>(It->Get());
+
+        if (!PC)
+        {
+            continue;
+        }
+
+        AHoistTheColoursPlayerState* PS =
+            PC->GetPlayerState<AHoistTheColoursPlayerState>();
+
+        if (!PS)
+        {
+            continue;
+        }
+
+        PlayerCount++;
+
+        if (PS->SelectedJusticeChoice >= 0 &&
+            PS->SelectedJusticeChoice <= 2)
+        {
+            SelectedCount++;
+        }
+    }
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Justice Choices : %d / %d"),
+        SelectedCount,
+        PlayerCount
+    );
+
+    // 全員選択完了
+    if (PlayerCount > 0 &&
+        SelectedCount == PlayerCount)
+    {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("========================================")
+        );
+
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("ALL PLAYERS SELECTED JUSTICE")
+        );
+
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("========================================")
+        );
+    }
+}
 
 // ========================================
 // 正義の秘密を割り当てる

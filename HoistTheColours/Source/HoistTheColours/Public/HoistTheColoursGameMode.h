@@ -30,7 +30,7 @@ protected:
 
     virtual void BeginPlay() override;
 
-public:
+
     // ========================================
     // ゲームフェーズ
     // ========================================
@@ -43,7 +43,8 @@ public:
 
     void StartResultPhase();
 
-
+public:
+    void CheckJusticeChoices();
 
     // ========================================
     // タイマー

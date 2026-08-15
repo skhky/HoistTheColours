@@ -3,6 +3,7 @@
 #include "HoistTheColoursGameState.h"
 #include "HoistTheColoursGameMode.h"
 #include "JusticeSecretWidget.h"
+#include "JusticeVotingWidget.h"
 
 // ========================================
 // 秘密情報
@@ -111,89 +112,97 @@ void AHoistTheColoursPlayerController::Client_ShowSecret_Implementation(
 // 投票
 // ========================================
 
-void AHoistTheColoursPlayerController::Server_Vote_Implementation(
+void AHoistTheColoursPlayerController::Server_SelectJustice_Implementation(
     int32 ChoiceIndex
 )
 {
-    // A / B / C以外は拒否
-    if (
-        ChoiceIndex < 0 ||
-        ChoiceIndex > 2
-        )
+    if (ChoiceIndex < 0 || ChoiceIndex > 2)
     {
         return;
     }
 
-
-    // GameState取得
-    AHoistTheColoursGameState* GS =
-        GetWorld()->GetGameState<
-        AHoistTheColoursGameState
-        >();
-
-    if (!GS)
-    {
-        return;
-    }
-
-
-    // Voting中以外は投票できない
-    if (
-        GS->CurrentPhase !=
-        EJusticePhase::Voting
-        )
-    {
-        return;
-    }
-
-
-    // PlayerState取得
     AHoistTheColoursPlayerState* PS =
-        GetPlayerState<
-        AHoistTheColoursPlayerState
-        >();
+        GetPlayerState<AHoistTheColoursPlayerState>();
 
     if (!PS)
     {
         return;
     }
 
-
-    // 二重投票防止
-    if (PS->bHasVoted)
+    // 二重選択防止
+    if (PS->SelectedJusticeChoice != -1)
     {
         return;
     }
 
-
-    // 投票を保存
-    PS->SelectedChoice =
-        ChoiceIndex;
-
-    PS->bHasVoted =
-        true;
-
+    PS->SelectedJusticeChoice = ChoiceIndex;
 
     UE_LOG(
         LogTemp,
         Warning,
-        TEXT("Player voted : %d"),
+        TEXT("Player selected justice choice : %d"),
         ChoiceIndex
     );
 
-
-    // GameMode取得
     AHoistTheColoursGameMode* GM =
         GetWorld()->GetAuthGameMode<
         AHoistTheColoursGameMode
         >();
 
-    if (!GM)
+    if (GM)
+    {
+        GM->CheckJusticeChoices();
+    }
+}
+
+void AHoistTheColoursPlayerController::Client_ShowVoting_Implementation()
+{
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Client_ShowVoting called")
+    );
+
+    if (!JusticeVotingWidgetClass)
+    {
+        UE_LOG(
+            LogTemp,
+            Error,
+            TEXT("JusticeVotingWidgetClassが設定されていません。")
+        );
+
+        return;
+    }
+
+    if (JusticeVotingWidget)
     {
         return;
     }
 
+    JusticeVotingWidget =
+        CreateWidget<UJusticeVotingWidget>(
+            this,
+            JusticeVotingWidgetClass
+        );
 
-    // 全員投票したか確認
-    GM->CheckVotes();
+    if (!JusticeVotingWidget)
+    {
+        UE_LOG(
+            LogTemp,
+            Error,
+            TEXT("JusticeVotingWidget作成失敗")
+        );
+
+        return;
+    }
+
+    JusticeVotingWidget->AddToViewport();
+
+    bShowMouseCursor = true;
+
+    UE_LOG(
+        LogTemp,
+        Warning,
+        TEXT("Voting UI displayed")
+    );
 }

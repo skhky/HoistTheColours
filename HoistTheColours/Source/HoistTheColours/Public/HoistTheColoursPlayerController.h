@@ -4,7 +4,6 @@
 #include "GameFramework/PlayerController.h"
 #include "HoistTheColoursPlayerController.generated.h"
 
-
 UCLASS()
 class HOISTTHECOLOURS_API AHoistTheColoursPlayerController
     : public APlayerController
@@ -28,9 +27,12 @@ public:
     // ========================================
 
     UFUNCTION(Server, Reliable)
-    void Server_Vote(
+    void Server_SelectJustice(
         int32 ChoiceIndex
     );
+
+    UFUNCTION(Client, Reliable)
+    void Client_ShowVoting();
 
     // ========================================
     // UI
@@ -40,4 +42,11 @@ public:
 
     UPROPERTY()
     class UJusticeSecretWidget* JusticeSecretWidget;
+
+
+    UPROPERTY(EditDefaultsOnly, Category = "Justice UI")
+    TSubclassOf<class UJusticeVotingWidget> JusticeVotingWidgetClass;
+
+    UPROPERTY()
+    class UJusticeVotingWidget* JusticeVotingWidget;
 };
