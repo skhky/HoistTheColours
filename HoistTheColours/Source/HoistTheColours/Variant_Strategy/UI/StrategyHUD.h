@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -56,3 +56,4 @@ protected:
 	/** Draws the HUD */
 	virtual void DrawHUD() override;
 };
+

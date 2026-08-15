@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -79,3 +79,4 @@ protected:
 	/** Called from timer to complete the destruction process for this NPC */
 	void DeferredDestroy();
 };
+

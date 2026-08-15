@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
@@ -24,13 +24,13 @@ enum class EMagnetPolarity : uint8
 };
 
 /**
- * ƒvƒŒƒCƒ„[‚â•¨—ƒIƒuƒWƒFƒNƒg‚É¥—Í‚ğ—^‚¦‚éƒRƒ“ƒ|[ƒlƒ“ƒgB
+ * ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚„ç‰©ç†ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ç£åŠ›ã‚’ä¸ãˆã‚‹ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã€‚
  *
- * N‹É / S‹É‚ğ‚Â
- * “¯‹É‚È‚ç”½”­
- * ˆÙ‹É‚È‚ç‹z’…
- * ¥—Í”ÍˆÍ‚É“ü‚Á‚½uŠÔ‚É‹­‚¢Snap
- * ”ÍˆÍ“à‚Å‚Íã‚¢Œp‘±¥—Í
+ * Næ¥µ / Sæ¥µã‚’æŒã¤
+ * åŒæ¥µãªã‚‰åç™º
+ * ç•°æ¥µãªã‚‰å¸ç€
+ * ç£åŠ›ç¯„å›²ã«å…¥ã£ãŸç¬é–“ã«å¼·ã„Snap
+ * ç¯„å›²å†…ã§ã¯å¼±ã„ç¶™ç¶šç£åŠ›
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class UMagnetComponent : public USceneComponent
@@ -56,21 +56,21 @@ public:
 
 
 	//==================================================
-	// Šî–{İ’è
+	// åŸºæœ¬è¨­å®š
 	//==================================================
 
-	/** ¥—Í‚Ì—LŒø / –³Œø */
+	/** ç£åŠ›ã®æœ‰åŠ¹ / ç„¡åŠ¹ */
 	UFUNCTION(BlueprintCallable, Category = "Magnet")
 	void SetMagnetActive(bool bOn);
 
-	/** N‹É / S‹É‚ğİ’è */
+	/** Næ¥µ / Sæ¥µã‚’è¨­å®š */
 	UFUNCTION(BlueprintCallable, Category = "Magnet")
 	void SetPolarity(EMagnetPolarity InPolarity)
 	{
 		Polarity = InPolarity;
 	}
 
-	/** ¥—Í‚ÌŠî–{‹­“x‚ğİ’è */
+	/** ç£åŠ›ã®åŸºæœ¬å¼·åº¦ã‚’è¨­å®š */
 	UFUNCTION(BlueprintCallable, Category = "Magnet")
 	void SetStrength(float InStrength)
 	{
@@ -79,70 +79,70 @@ public:
 
 
 	//==================================================
-	// ¥—Íƒpƒ‰ƒ[ƒ^
+	// ç£åŠ›ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 	//==================================================
 
-	/** ¥—Í‚ª“Í‚­”¼Œa */
+	/** ç£åŠ›ãŒå±ŠãåŠå¾„ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
 	float Radius = 600.f;
 
-	/** ¥—Í‚ÌŠî–{‹­“x */
+	/** ç£åŠ›ã®åŸºæœ¬å¼·åº¦ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
 	float MagnetStrength = 2000.f;
 
-	/** ¥—Í‚Ì‹——£Œ¸Š */
+	/** ç£åŠ›ã®è·é›¢æ¸›è¡° */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
 	EMagnetFalloff Falloff = EMagnetFalloff::Linear;
 
-	/** ‚±‚Ì¥Î‚Ì‹É */
+	/** ã“ã®ç£çŸ³ã®æ¥µ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
 	EMagnetPolarity Polarity = EMagnetPolarity::North;
 
 
 	//==================================================
-	// ƒXƒiƒbƒv / Œp‘±¥—Í
+	// ã‚¹ãƒŠãƒƒãƒ— / ç¶™ç¶šç£åŠ›
 	//==================================================
 
 	/**
-	 * ¥—Í”ÍˆÍ‚É“ü‚Á‚½uŠÔ‚É—^‚¦‚é‹­‚³B
-	 * ‘å‚«‚¢‚Ù‚Çuƒoƒ“ƒbv‚Æ‹­‚­“®‚­B
+	 * ç£åŠ›ç¯„å›²ã«å…¥ã£ãŸç¬é–“ã«ä¸ãˆã‚‹å¼·ã•ã€‚
+	 * å¤§ãã„ã»ã©ã€Œãƒãƒ³ãƒƒã€ã¨å¼·ãå‹•ãã€‚
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet|Snap")
 	float SnapPower = 900.f;
 
 	/**
-	 * ¥—Í”ÍˆÍ“à‚É‚¢‚éŠÔ‚É—^‚¦‚éã‚¢Œp‘±—ÍB
+	 * ç£åŠ›ç¯„å›²å†…ã«ã„ã‚‹é–“ã«ä¸ãˆã‚‹å¼±ã„ç¶™ç¶šåŠ›ã€‚
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet|Snap")
 	float ContinuousPower = 250.f;
 
 
 	//==================================================
-	// ‘ÎÛ
+	// å¯¾è±¡
 	//==================================================
 
-	/** •¨—ƒIƒuƒWƒFƒNƒg‚É‚à¥—Í‚ğ—^‚¦‚é */
+	/** ç‰©ç†ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã‚‚ç£åŠ›ã‚’ä¸ãˆã‚‹ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
 	bool bAffectPhysics = true;
 
-	/** Character‚É‚à¥—Í‚ğ—^‚¦‚é */
+	/** Characterã«ã‚‚ç£åŠ›ã‚’ä¸ãˆã‚‹ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
 	bool bAffectCharacters = true;
 
-	/** ¥—Í”ÍˆÍ‚ğŒŸõ‚·‚éCollision Channel */
+	/** ç£åŠ›ç¯„å›²ã‚’æ¤œç´¢ã™ã‚‹Collision Channel */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
 	TEnumAsByte<ECollisionChannel> QueryChannel = ECC_PhysicsBody;
 
 
 	//==================================================
-	// ƒfƒoƒbƒO
+	// ãƒ‡ãƒãƒƒã‚°
 	//==================================================
 
-	/** ¥—Í”ÍˆÍ‚ğƒfƒoƒbƒO•\¦‚·‚é */
+	/** ç£åŠ›ç¯„å›²ã‚’ãƒ‡ãƒãƒƒã‚°è¡¨ç¤ºã™ã‚‹ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet|Debug")
 	bool bDrawDebug = true;
 
-	/** ƒfƒoƒbƒO•\¦ŠÔ */
+	/** ãƒ‡ãƒãƒƒã‚°è¡¨ç¤ºæ™‚é–“ */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet|Debug")
 	float DebugDrawTime = 0.05f;
 
@@ -150,35 +150,35 @@ public:
 protected:
 
 	//==================================================
-	// “à•”ó‘Ô
+	// å†…éƒ¨çŠ¶æ…‹
 	//==================================================
 
-	/** ¥—Í‚ªŒ»İ—LŒø‚© */
+	/** ç£åŠ›ãŒç¾åœ¨æœ‰åŠ¹ã‹ */
 	bool bIsActive = true;
 
 	/**
-	 * ‘OƒtƒŒ[ƒ€‚Ü‚Å¥—Í”ÍˆÍ“à‚É‚¢‚½ActorB
+	 * å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§ç£åŠ›ç¯„å›²å†…ã«ã„ãŸActorã€‚
 	 *
-	 * u‰‚ß‚Ä”ÍˆÍ‚É“ü‚Á‚½uŠÔv‚ğ
-	 * ŒŸo‚·‚é‚½‚ß‚Ég—p‚·‚éB
+	 * ã€Œåˆã‚ã¦ç¯„å›²ã«å…¥ã£ãŸç¬é–“ã€ã‚’
+	 * æ¤œå‡ºã™ã‚‹ãŸã‚ã«ä½¿ç”¨ã™ã‚‹ã€‚
 	 */
 	TSet<TWeakObjectPtr<AActor>> InsideActors;
 
 
 	//==================================================
-	// “à•”ˆ—
+	// å†…éƒ¨å‡¦ç†
 	//==================================================
 
-	/** ‹——£‚É‚æ‚é¥—Í”{—¦ */
+	/** è·é›¢ã«ã‚ˆã‚‹ç£åŠ›å€ç‡ */
 	float GetFalloffMultiplier(float Distance) const;
 
-	/** N/S‚Ì‘g‚İ‡‚í‚¹‚©‚ç‹z’…‚©”½”­‚©‚ğ”»’è */
+	/** N/Sã®çµ„ã¿åˆã‚ã›ã‹ã‚‰å¸ç€ã‹åç™ºã‹ã‚’åˆ¤å®š */
 	bool ShouldRepel(AActor* OtherActor) const;
 
-	/** ¥—Í”ÍˆÍ‚É“ü‚Á‚½uŠÔ‚Ì‹­‚¢Snap */
+	/** ç£åŠ›ç¯„å›²ã«å…¥ã£ãŸç¬é–“ã®å¼·ã„Snap */
 	void ApplySnap(ACharacter* Character, bool bRepel);
 
-	/** ”ÍˆÍ“à‚É‚¢‚éŠÔ‚Ìã‚¢Œp‘±¥—Í */
+	/** ç¯„å›²å†…ã«ã„ã‚‹é–“ã®å¼±ã„ç¶™ç¶šç£åŠ› */
 	void ApplyContinuous(
 		ACharacter* Character,
 		const FVector& Direction,
@@ -186,6 +186,6 @@ protected:
 		float DeltaTime
 	);
 
-	/** ¥—Í”ÍˆÍ“à‚Ì‘ÎÛ‚ğŒŸõ‚µ‚Äˆ— */
+	/** ç£åŠ›ç¯„å›²å†…ã®å¯¾è±¡ã‚’æ¤œç´¢ã—ã¦å‡¦ç† */
 	void ApplyMagnetForces(float DeltaTime);
 };

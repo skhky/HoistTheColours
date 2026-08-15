@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -301,3 +301,4 @@ protected:
 	/** Detects taps and double taps for mobile platforms. */
 	void CheckTouchTap(bool& bTapped, bool& bDoubleTapped);
 };
+

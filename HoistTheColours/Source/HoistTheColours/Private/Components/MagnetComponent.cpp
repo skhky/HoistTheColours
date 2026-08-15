@@ -1,4 +1,4 @@
-#include "Components/MagnetComponent.h"
+ï»¿#include "Components/MagnetComponent.h"
 
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
@@ -38,12 +38,12 @@ void UMagnetComponent::EndPlay(
 
 void UMagnetComponent::SetMagnetActive(bool bOn)
 {
-	// ActorComponent‚Æ‚µ‚Ä‚ÌActiveó‘Ô
+	// ActorComponentã¨ã—ã¦ã®ActiveçŠ¶æ…‹
 	Super::SetActive(bOn);
 
 	bIsActive = bOn;
 
-	// Tick‚à“¯‚ÉON/OFF
+	// Tickã‚‚åŒæ™‚ã«ON/OFF
 	SetComponentTickEnabled(bOn);
 }
 
@@ -58,7 +58,7 @@ void UMagnetComponent::TickComponent(
 		TickType,
 		ThisTickFunction);
 
-	// ¥—Í‚ª–³ŒøA‚Ü‚½‚Í”¼Œa‚ª0‚È‚ç‰½‚à‚µ‚È‚¢
+	// ç£åŠ›ãŒç„¡åŠ¹ã€ã¾ãŸã¯åŠå¾„ãŒ0ãªã‚‰ä½•ã‚‚ã—ãªã„
 	if (!bIsActive || Radius <= 0.f)
 	{
 		return;
@@ -110,7 +110,7 @@ bool UMagnetComponent::ShouldRepel(AActor* OtherActor) const
 		return false;
 	}
 
-	// ‘Šè‚ª¥ÎƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ‚Á‚Ä‚¢‚é‚©Šm”F
+	// ç›¸æ‰‹ãŒç£çŸ³ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’æŒã£ã¦ã„ã‚‹ã‹ç¢ºèª
 	const UMagnetComponent* OtherMagnet =
 		OtherActor->FindComponentByClass<UMagnetComponent>();
 
@@ -119,13 +119,13 @@ bool UMagnetComponent::ShouldRepel(AActor* OtherActor) const
 		return false;
 	}
 
-	// “¯‚¶‹É‚È‚ç”½”­
-	// N-N ¨ ”½”­
-	// S-S ¨ ”½”­
+	// åŒã˜æ¥µãªã‚‰åç™º
+	// N-N â†’ åç™º
+	// S-S â†’ åç™º
 	//
-	// ˆá‚¤‹É‚È‚ç‹z’…
-	// N-S ¨ ‹z’…
-	// S-N ¨ ‹z’…
+	// é•ã†æ¥µãªã‚‰å¸ç€
+	// N-S â†’ å¸ç€
+	// S-N â†’ å¸ç€
 	return Polarity == OtherMagnet->Polarity;
 }
 
@@ -139,7 +139,7 @@ void UMagnetComponent::ApplySnap(
 		return;
 	}
 
-	// ©•ª ¨ ‘Šè ‚Ì•ûŒü
+	// è‡ªåˆ† â†’ ç›¸æ‰‹ ã®æ–¹å‘
 	FVector Direction =
 		(Character->GetActorLocation() - GetComponentLocation())
 		.GetSafeNormal();
@@ -149,13 +149,13 @@ void UMagnetComponent::ApplySnap(
 		return;
 	}
 
-	// “¯‹É‚È‚ç”½”­‚È‚Ì‚Å•ûŒü‚ğ‹t‚É‚·‚é
+	// åŒæ¥µãªã‚‰åç™ºãªã®ã§æ–¹å‘ã‚’é€†ã«ã™ã‚‹
 	if (bRepel)
 	{
 		Direction *= -1.0f;
 	}
 
-	// ”ÍˆÍ‚É“ü‚Á‚½uŠÔ‚¾‚¯‹­‚­”ò‚Î‚·
+	// ç¯„å›²ã«å…¥ã£ãŸç¬é–“ã ã‘å¼·ãé£›ã°ã™
 	const FVector LaunchVelocity =
 		Direction * SnapPower;
 
@@ -164,7 +164,7 @@ void UMagnetComponent::ApplySnap(
 		true,
 		true);
 
-	// ƒfƒoƒbƒO•\¦
+	// ãƒ‡ãƒãƒƒã‚°è¡¨ç¤º
 	if (bDrawDebug)
 	{
 		UWorld* World = GetWorld();
@@ -206,7 +206,7 @@ void UMagnetComponent::ApplyContinuous(
 		return;
 	}
 
-	// “¯‹É‚È‚ç”½”­
+	// åŒæ¥µãªã‚‰åç™º
 	if (bRepel)
 	{
 		ForceDirection *= -1.0f;
@@ -220,7 +220,7 @@ void UMagnetComponent::ApplyContinuous(
 		return;
 	}
 
-	// ã‚¢Œp‘±¥—Í
+	// å¼±ã„ç¶™ç¶šç£åŠ›
 	Movement->Velocity +=
 		ForceDirection *
 		ContinuousPower *
@@ -238,7 +238,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 	}
 
 	//==================================================
-	// ¥—Í”ÍˆÍ
+	// ç£åŠ›ç¯„å›²
 	//==================================================
 
 	const FVector Origin =
@@ -257,7 +257,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 	//==================================================
-	// ”ÍˆÍ“à‚ÌƒIƒuƒWƒFƒNƒg‚ğæ“¾
+	// ç¯„å›²å†…ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
 	//==================================================
 
 	World->OverlapMultiByChannel(
@@ -271,7 +271,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 	//==================================================
-	// ƒfƒoƒbƒOF¥—Í”ÍˆÍ
+	// ãƒ‡ãƒãƒƒã‚°ï¼šç£åŠ›ç¯„å›²
 	//==================================================
 
 	if (bDrawDebug)
@@ -291,14 +291,14 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 	//==================================================
-	// ¡ƒtƒŒ[ƒ€”ÍˆÍ“à‚É‚¢‚éActor
+	// ä»Šãƒ•ãƒ¬ãƒ¼ãƒ ç¯„å›²å†…ã«ã„ã‚‹Actor
 	//==================================================
 
 	TSet<TWeakObjectPtr<AActor>> CurrentInsideActors;
 
 
 	//==================================================
-	// ”ÍˆÍ“à‚ÌActor‚ğˆ—
+	// ç¯„å›²å†…ã®Actorã‚’å‡¦ç†
 	//==================================================
 
 	for (const FOverlapResult& Result : Overlaps)
@@ -315,7 +315,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 		}
 
 
-		// ©•ª©g‚Í–³‹
+		// è‡ªåˆ†è‡ªèº«ã¯ç„¡è¦–
 		if (OtherActor == GetOwner())
 		{
 			continue;
@@ -323,7 +323,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 		//==================================================
-		// ‘Šè‚ª¥Î‚©Šm”F
+		// ç›¸æ‰‹ãŒç£çŸ³ã‹ç¢ºèª
 		//==================================================
 
 		UMagnetComponent* OtherMagnet =
@@ -331,15 +331,15 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 		if (!OtherMagnet)
 		{
-			// ¥Î‚ğ‚Á‚Ä‚¢‚È‚¢ƒIƒuƒWƒFƒNƒg‚Í
-			// Character‚Æ‚µ‚Äˆ—‚·‚é‚±‚Æ‚à‰Â”\‚¾‚ªA
-			// ¡‰ñ‚ÍƒXƒLƒbƒv
+			// ç£çŸ³ã‚’æŒã£ã¦ã„ãªã„ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯
+			// Characterã¨ã—ã¦å‡¦ç†ã™ã‚‹ã“ã¨ã‚‚å¯èƒ½ã ãŒã€
+			// ä»Šå›ã¯ã‚¹ã‚­ãƒƒãƒ—
 			continue;
 		}
 
 
 		//==================================================
-		// ‹——£E•ûŒü
+		// è·é›¢ãƒ»æ–¹å‘
 		//==================================================
 
 		const FVector TargetLocation =
@@ -361,7 +361,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 		//==================================================
-		// N/S‚É‚æ‚é‹z’…E”½”­”»’è
+		// N/Sã«ã‚ˆã‚‹å¸ç€ãƒ»åç™ºåˆ¤å®š
 		//==================================================
 
 		const bool bRepel =
@@ -369,7 +369,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 		//==================================================
-		// Œ»İ‚Ì¥—Í
+		// ç¾åœ¨ã®ç£åŠ›
 		//==================================================
 
 		const float FalloffMultiplier =
@@ -381,7 +381,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 		//==================================================
-		// Œ»İƒtƒŒ[ƒ€‚Ì—Í‚Ì•ûŒü
+		// ç¾åœ¨ãƒ•ãƒ¬ãƒ¼ãƒ ã®åŠ›ã®æ–¹å‘
 		//==================================================
 
 		FVector ForceDirection =
@@ -399,14 +399,14 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 		//==================================================
-		// ¡ƒtƒŒ[ƒ€”ÍˆÍ“à‚Æ‚µ‚Ä‹L˜^
+		// ä»Šãƒ•ãƒ¬ãƒ¼ãƒ ç¯„å›²å†…ã¨ã—ã¦è¨˜éŒ²
 		//==================================================
 
 		CurrentInsideActors.Add(OtherActor);
 
 
 		//==================================================
-		// Characterˆ—
+		// Characterå‡¦ç†
 		//==================================================
 
 		if (bAffectCharacters)
@@ -416,13 +416,13 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 			if (Character)
 			{
-				// ‘OƒtƒŒ[ƒ€‚©‚ç”ÍˆÍ“à‚É‚¢‚½‚©H
+				// å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ç¯„å›²å†…ã«ã„ãŸã‹ï¼Ÿ
 				const bool bWasInside =
 					InsideActors.Contains(OtherActor);
 
 
 				//==========================================
-				// ‰‚ß‚Ä”ÍˆÍ‚É“ü‚Á‚½
+				// åˆã‚ã¦ç¯„å›²ã«å…¥ã£ãŸ
 				//==========================================
 
 				if (!bWasInside)
@@ -435,7 +435,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 				//==========================================
-				// ”ÍˆÍ“à‚É‚¢‚éŠÔ
+				// ç¯„å›²å†…ã«ã„ã‚‹é–“
 				//==========================================
 
 				ApplyContinuous(
@@ -446,7 +446,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 				);
 
 
-				// ƒfƒoƒbƒO
+				// ãƒ‡ãƒãƒƒã‚°
 				if (bDrawDebug)
 				{
 					DrawDebugDirectionalArrow(
@@ -473,7 +473,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 		//==================================================
-		// PhysicsƒIƒuƒWƒFƒNƒg
+		// Physicsã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 		//==================================================
 
 		if (bAffectPhysics &&
@@ -511,7 +511,7 @@ void UMagnetComponent::ApplyMagnetForces(float DeltaTime)
 
 
 	//==================================================
-	// ¡ƒtƒŒ[ƒ€‚Ì”ÍˆÍ“àî•ñ‚ğ•Û‘¶
+	// ä»Šãƒ•ãƒ¬ãƒ¼ãƒ ã®ç¯„å›²å†…æƒ…å ±ã‚’ä¿å­˜
 	//==================================================
 
 	InsideActors =

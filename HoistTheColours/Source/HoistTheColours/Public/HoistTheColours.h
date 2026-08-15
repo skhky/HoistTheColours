@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -6,3 +6,4 @@
 
 /** Main log category used across the project */
 DECLARE_LOG_CATEGORY_EXTERN(LogHoistTheColours, Log, All);
+

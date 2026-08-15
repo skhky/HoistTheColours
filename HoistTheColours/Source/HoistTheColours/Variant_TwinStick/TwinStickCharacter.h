@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -210,3 +210,4 @@ protected:
 	/** Resets stick the aim autofire flag after the autofire timer has expired */
 	void ResetAutoFire();
 };
+

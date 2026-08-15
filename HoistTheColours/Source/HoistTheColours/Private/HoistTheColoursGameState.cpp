@@ -1,5 +1,33 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "HoistTheColoursGameState.h"
+
+#include "Net/UnrealNetwork.h"
 
 
-#include "HoistTheColoursGameState.h"
+void AHoistTheColoursGameState::GetLifetimeReplicatedProps(
+    TArray<FLifetimeProperty>& OutLifetimeProps
+) const
+{
+    Super::GetLifetimeReplicatedProps(
+        OutLifetimeProps
+    );
 
+
+    // ========================================
+    // CurrentPhaseを同期
+    // ========================================
+
+    DOREPLIFETIME(
+        AHoistTheColoursGameState,
+        CurrentPhase
+    );
+
+
+    // ========================================
+    // WinningChoiceを同期
+    // ========================================
+
+    DOREPLIFETIME(
+        AHoistTheColoursGameState,
+        WinningChoice
+    );
+}

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "StrategyPawn.h"
@@ -37,3 +37,4 @@ void AStrategyPawn::SetZoomModifier(float Value)
 	// set the ortho width on the camera
 	Camera->SetOrthoWidth(Value);
 }
+

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -35,3 +35,4 @@ protected:
 	UFUNCTION(BlueprintPure, Category="UI")
 	int32 GetSelectedUnitsCount() { return SelectedUnitCount; }
 };
+

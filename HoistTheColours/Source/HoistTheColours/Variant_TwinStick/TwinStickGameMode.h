@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -100,3 +100,4 @@ public:
 	/** Decreases the NPC count */
 	void DecreaseNPCs();
 };
+

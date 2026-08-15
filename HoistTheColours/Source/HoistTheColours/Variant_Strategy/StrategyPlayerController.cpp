@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "StrategyPlayerController.h"
@@ -815,3 +815,4 @@ void AStrategyPlayerController::CheckTouchTap(bool& bTapped, bool& bDoubleTapped
 	// save the tap release time
 	LastTapReleaseTime = GameTime;
 }
+

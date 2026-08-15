@@ -1,5 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "HoistTheColoursPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
+void AHoistTheColoursPlayerState::GetLifetimeReplicatedProps(
+    TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-#include "HoistTheColoursPlayerState.h"
-
+    DOREPLIFETIME(AHoistTheColoursPlayerState, bHasVoted);
+    DOREPLIFETIME(AHoistTheColoursPlayerState, SelectedChoice);
+}

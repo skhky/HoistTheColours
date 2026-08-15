@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "TwinStickProjectile.h"
@@ -63,3 +63,4 @@ void ATwinStickProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 	// destroy this actor immediately
 	Destroy();
 }
+

@@ -1,4 +1,4 @@
-#include "HoistTheColoursCharacter.h"
+﻿#include "HoistTheColoursCharacter.h"
 
 AHoistTheColoursCharacter::AHoistTheColoursCharacter()
 {

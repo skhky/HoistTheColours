@@ -1,21 +1,43 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "HoistTheColoursPlayerController.generated.h"
 
-class UNiagaraSystem;
-class UInputMappingContext;
-class UInputAction;
-class UPathFollowingComponent;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
-
-UCLASS(abstract)
-class AHoistTheColoursPlayerController : public APlayerController
+UCLASS()
+class HOISTTHECOLOURS_API AHoistTheColoursPlayerController
+    : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AHoistTheColoursPlayerController();
+
+    // ========================================
+    // サーバーから本人だけに秘密を送る
+    // ========================================
+
+    UFUNCTION(Client, Reliable)
+    void Client_ShowSecret(
+        const FText& SecretText
+    );
+
+
+    // ========================================
+    // プレイヤーの投票
+    // ========================================
+
+    UFUNCTION(Server, Reliable)
+    void Server_Vote(
+        int32 ChoiceIndex
+    );
+
+    // ========================================
+    // UI
+    // ========================================
+    UPROPERTY(EditDefaultsOnly, Category = "Justice UI")
+    TSubclassOf<class UJusticeSecretWidget> JusticeSecretWidgetClass;
+
+    UPROPERTY()
+    class UJusticeSecretWidget* JusticeSecretWidget;
 };

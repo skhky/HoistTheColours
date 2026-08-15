@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Engine/DataAsset.h"
 #include "CharacterDataAsset.generated.h"

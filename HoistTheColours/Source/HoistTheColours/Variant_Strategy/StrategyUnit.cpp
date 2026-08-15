@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "StrategyUnit.h"
@@ -144,3 +144,4 @@ void AStrategyUnit::OnMoveFinished(FAIRequestID RequestID, const FPathFollowingR
 	// call the delegate
 	OnMoveCompleted.Broadcast(this);
 }
+

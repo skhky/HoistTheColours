@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "StrategyUI.h"
@@ -17,3 +17,4 @@ void UStrategyUI::SetSelectedUnitsCount(int32 Count)
 		BP_UpdateUnitsCount();
 	}
 }
+

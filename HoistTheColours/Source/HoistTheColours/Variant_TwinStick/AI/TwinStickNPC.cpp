@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "TwinStickNPC.h"
@@ -124,3 +124,4 @@ void ATwinStickNPC::DeferredDestroy()
 	// destroy this actor
 	Destroy();
 }
+

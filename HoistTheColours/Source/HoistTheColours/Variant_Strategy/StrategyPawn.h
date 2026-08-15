@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -39,3 +39,4 @@ public:
 	/** Returns the camera component */
 	UCameraComponent* GetCamera() const { return Camera; }
 };
+

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "TwinStickCharacter.h"
@@ -307,4 +307,5 @@ void ATwinStickCharacter::ResetAutoFire()
 	// reset the autofire flag
 	bAutoFireActive = false;
 }
+
 

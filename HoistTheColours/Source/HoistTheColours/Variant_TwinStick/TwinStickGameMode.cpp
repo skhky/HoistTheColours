@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "TwinStickGameMode.h"
@@ -127,3 +127,4 @@ void ATwinStickGameMode::DecreaseNPCs()
 	// decrease the NPC counter
 	--NPCCount;
 }
+

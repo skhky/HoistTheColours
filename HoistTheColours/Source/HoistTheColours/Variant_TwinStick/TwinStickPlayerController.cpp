@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 
 #include "TwinStickPlayerController.h"
@@ -96,3 +96,4 @@ bool ATwinStickPlayerController::ShouldUseTouchControls() const
 	// are we on a mobile platform? Should we force touch?
 	return SVirtualJoystick::ShouldDisplayTouchInterface() || bForceTouchControls;
 }
+
