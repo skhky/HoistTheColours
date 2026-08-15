@@ -9,7 +9,6 @@ UENUM(BlueprintType)
 enum class EJusticePhase : uint8
 {
     Lobby,
-    Information,
     Discussion,
     Voting,
     Result,

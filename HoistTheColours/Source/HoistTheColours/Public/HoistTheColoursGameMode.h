@@ -37,8 +37,6 @@ public:
 
     void SetJusticePhase(EJusticePhase NewPhase);
 
-    void StartInformationPhase();
-
     void StartDiscussionPhase();
 
     void StartVotingPhase();

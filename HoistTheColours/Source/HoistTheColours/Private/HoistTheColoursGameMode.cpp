@@ -96,8 +96,7 @@ void AHoistTheColoursGameMode::BeginPlay()
     );
 
 
-    // 最初はInformationフェーズ
-    StartInformationPhase();
+    StartDiscussionPhase();
 }
 
 
@@ -135,36 +134,6 @@ void AHoistTheColoursGameMode::SetJusticePhase(
         static_cast<int32>(NewPhase)
     );
 }
-
-
-// ========================================
-// Information
-// ========================================
-
-void AHoistTheColoursGameMode::StartInformationPhase()
-{
-    SetJusticePhase(
-        EJusticePhase::Information
-    );
-
-
-    UE_LOG(
-        LogTemp,
-        Warning,
-        TEXT("Information Phase Started")
-    );
-
-
-    // 現在はテスト用に10秒
-    GetWorldTimerManager().SetTimer(
-        PhaseTimerHandle,
-        this,
-        &AHoistTheColoursGameMode::StartDiscussionPhase,
-        10.0f,
-        false
-    );
-}
-
 
 // ========================================
 // Discussion
@@ -407,7 +376,7 @@ void AHoistTheColoursGameMode::StartResultPhase()
     GetWorldTimerManager().SetTimer(
         PhaseTimerHandle,
         this,
-        &AHoistTheColoursGameMode::StartInformationPhase,
+        &AHoistTheColoursGameMode::StartDiscussionPhase,
         10.0f,
         false
     );
