@@ -16,16 +16,6 @@ class AHoistTheColoursPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-protected:
-	bool isPolarityPressed;
-
 public:
 	AHoistTheColoursPlayerController();
-
-protected:
-	virtual void SetupInputComponent() override;
-
-	void MoveForward(float Value);
-	void MoveRight(float Value);
-	void ActionPolarity(float Value);
 };
