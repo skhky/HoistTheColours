@@ -10,7 +10,6 @@
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "Blueprint/UserWidget.h"
-#include "HoistTheColours.h"
 #include "Widgets/Input/SVirtualJoystick.h"
 
 void ATwinStickPlayerController::BeginPlay()
@@ -28,12 +27,7 @@ void ATwinStickPlayerController::BeginPlay()
 			// add the controls to the player screen
 			MobileControlsWidget->AddToPlayerScreen(0);
 
-		} else {
-
-			UE_LOG(LogHoistTheColours, Error, TEXT("Could not spawn mobile controls widget."));
-
-		}
-
+		} 
 	}
 }
 
