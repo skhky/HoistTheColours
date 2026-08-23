@@ -15,6 +15,7 @@ public:
 
     virtual void PostLogin(APlayerController* NewPlayer) override;
     virtual void Logout(AController* Exiting) override;
+    virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 
     // Seconds per in-game day (for development/testing). Server drives day progression.
     UPROPERTY(EditDefaultsOnly, Category = "Game|Time")

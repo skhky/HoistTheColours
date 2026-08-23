@@ -18,17 +18,35 @@ ABoardGameGameMode::ABoardGameGameMode()
     for (int i = 0; i < 4; ++i) AssignedNations[i] = false;
 }
 
+void ABoardGameGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
+{
+    Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+
+    // Count current assigned players. If we already have 4 assigned nations, reject new connections.
+    int32 AssignedCount = 0;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (AssignedNations[i]) ++AssignedCount;
+    }
+
+    if (AssignedCount >= 4)
+    {
+        ErrorMessage = TEXT("Server full: maximum 4 players allowed.");
+        UE_LOG(LogTemp, Warning, TEXT("PreLogin rejected connection from %s: server full"), *Address);
+    }
+}
+
 void ABoardGameGameMode::BeginPlay()
 {
     Super::BeginPlay();
 
-    // Initialize GameState day to 1 at start
+    // Initialize GameState day to 0 at start. We will start the day timer
+    // only after 4 players have joined (see PostLogin).
     ABoardGameGameState* GS = GetGameState<ABoardGameGameState>();
     if (HasAuthority() && GS)
     {
-        GS->CurrentDay = 1;
+        GS->CurrentDay = 0; // no day yet until full player count
         GS->CurrentPhase = EGamePhase::GP_Planning;
-        StartDayTimer();
     }
 }
 
@@ -64,6 +82,28 @@ void ABoardGameGameMode::PostLogin(APlayerController* NewPlayer)
     PS->bIsDefeated = false;
 
     UE_LOG(LogTemp, Log, TEXT("Player %s assigned Nation %d"), *PS->GetPlayerName(), PS->NationId);
+
+    // Count how many nations are currently assigned. When we reach 4 assigned
+    // players we start the game (set CurrentDay = 1 and start the day timer).
+    if (HasAuthority())
+    {
+        int32 AssignedCount = 0;
+        for (int i = 0; i < 4; ++i)
+        {
+            if (AssignedNations[i]) ++AssignedCount;
+        }
+
+        ABoardGameGameState* GS = GetGameState<ABoardGameGameState>();
+        if (AssignedCount >= 4 && GS && GS->CurrentDay == 0)
+        {
+            // Set initial day to 1 and start timer. Why here: GameMode is server-authority
+            // and is responsible for starting the server-driven game loop when all players present.
+            GS->CurrentDay = 1;
+            GS->CurrentPhase = EGamePhase::GP_Planning;
+            UE_LOG(LogTemp, Log, TEXT("All 4 players joined - starting Day 1"));
+            StartDayTimer();
+        }
+    }
 }
 
 void ABoardGameGameMode::Logout(AController* Exiting)
