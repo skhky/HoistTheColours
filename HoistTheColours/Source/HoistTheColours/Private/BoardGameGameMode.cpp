@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/Engine.h"
+#include "HoistTheColoursPlayerController.h"
+#include "ActionDefinition.h"
 
 ABoardGameGameMode::ABoardGameGameMode()
 {
@@ -16,6 +18,7 @@ ABoardGameGameMode::ABoardGameGameMode()
     SecondsPerDay = 5.0f; // default for development: 5 seconds per in-game day
 
     for (int i = 0; i < 4; ++i) AssignedNations[i] = false;
+    InitializeActionDefinitions();
 }
 
 void ABoardGameGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -47,6 +50,12 @@ void ABoardGameGameMode::BeginPlay()
     {
         GS->CurrentDay = 0; // no day yet until full player count
         GS->CurrentPhase = EGamePhase::GP_Planning;
+    }
+
+    // Ensure action definitions exist on server begin play as well
+    if (HasAuthority())
+    {
+        InitializeActionDefinitions();
     }
 }
 
@@ -155,4 +164,61 @@ void ABoardGameGameMode::TickDay()
     GS->CurrentDay += 1;
 
     UE_LOG(LogTemp, Log, TEXT("Day advanced: %d"), GS->CurrentDay);
+}
+
+void ABoardGameGameMode::InitializeActionDefinitions()
+{
+    ActionDefinitions.Empty();
+
+    FActionDefinition Def;
+    Def.ActionId = (EActionType)EActionType::AT_Investigation;
+    Def.ActionName = FName(TEXT("Investigation"));
+    Def.ActionPointCost = 1;
+    Def.DurationDays = 10; // per-action value; GameMode must use this value
+    ActionDefinitions.Add((int32)Def.ActionId, Def);
+}
+
+bool ABoardGameGameMode::ValidateAndExecuteAction(ABoardGamePlayerState* PS, const FActionIntent& Intent, AHoistTheColoursPlayerController* RequestPC)
+{
+    if (!HasAuthority() || !PS || !RequestPC) return false;
+
+    // Lookup action definition
+    const FActionDefinition* Def = ActionDefinitions.Find((int32)Intent.ActionType);
+    if (!Def)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Unknown action type"));
+        return false;
+    }
+
+    // Validation: check AP
+    if (PS->ActionPoints < Def->ActionPointCost)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Not enough AP"));
+        return false;
+    }
+
+    // Validation: defeated
+    if (PS->bIsDefeated)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Nation defeated"));
+        return false;
+    }
+
+    // Validation passed: consume AP
+    PS->ActionPoints -= Def->ActionPointCost;
+
+    // Advance days according to the action definition's DurationDays
+    ABoardGameGameState* GS = GetGameState<ABoardGameGameState>();
+    if (GS)
+    {
+        int32 Advance = FMath::Min(Def->DurationDays, GS->MaxDays - GS->CurrentDay);
+        if (Advance > 0)
+        {
+            GS->CurrentDay += Advance;
+            UE_LOG(LogTemp, Log, TEXT("Action executed: advanced %d days to %d"), Advance, GS->CurrentDay);
+        }
+    }
+
+    // Note: Specific action effects (gold, population, etc.) are not implemented in this baseline.
+    return true;
 }

@@ -3,6 +3,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "EActionType.h"
+#include "ActionDefinition.h"
+#include "ActionIntent.h"
 #include "BoardGameGameMode.generated.h"
 
 UCLASS()
@@ -21,6 +24,12 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Game|Time")
     float SecondsPerDay;
 
+    // Initialize action definitions
+    void InitializeActionDefinitions();
+
+    // Validate and execute an action intent. Returns true if action executed.
+    bool ValidateAndExecuteAction(class ABoardGamePlayerState* PS, const struct FActionIntent& Intent, class AHoistTheColoursPlayerController* RequestPC);
+
 protected:
     virtual void BeginPlay() override;
 
@@ -32,4 +41,7 @@ protected:
 
     // Keep track of assigned nations (0..3). true=assigned
     bool AssignedNations[4];
+
+    // Action definitions map (ActionId -> definition). Minimal storage in GameMode for prototype.
+    TMap<int32, struct FActionDefinition> ActionDefinitions;
 };
