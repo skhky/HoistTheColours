@@ -4,10 +4,12 @@
 #include "TimerManager.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
+#include "EngineUtils.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine/Engine.h"
 #include "HoistTheColoursPlayerController.h"
 #include "ActionDefinition.h"
+#include "MapManager.h"
 
 ABoardGameGameMode::ABoardGameGameMode()
 {
@@ -56,6 +58,27 @@ void ABoardGameGameMode::BeginPlay()
     if (HasAuthority())
     {
         InitializeActionDefinitions();
+        // Spawn MapManager if not present (server only)
+        UWorld* W = GetWorld();
+        if (W)
+        {
+            bool bFound = false;
+            for (TActorIterator<AMapManager> It(W); It; ++It)
+            {
+                bFound = true;
+                break;
+            }
+            if (bFound == false)
+            {
+                FActorSpawnParameters Params;
+                Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+                AMapManager* MM = W->SpawnActor<AMapManager>(AMapManager::StaticClass(), Params);
+                if (MM)
+                {
+                    UE_LOG(LogTemp, Log, TEXT("MapManager spawned by GameMode"));
+                }
+            }
+        }
     }
 }
 
@@ -205,6 +228,49 @@ bool ABoardGameGameMode::ValidateAndExecuteAction(ABoardGamePlayerState* PS, con
     }
 
     // Validation passed: consume AP
+    // If this action requires tile interaction (Investigation), consult MapManager first
+    if (Intent.ActionType == EActionType::AT_Investigation)
+    {
+        UWorld* W = GetWorld();
+        if (W)
+        {
+            AMapManager* FoundMM = nullptr;
+            for (TActorIterator<AMapManager> It(W); It; ++It)
+            {
+                FoundMM = *It;
+                break;
+            }
+
+            if (!FoundMM)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: No MapManager available"));
+                return false;
+            }
+
+            // Determine revealable tile (tile selection UI not implemented yet)
+            int32 TileId = -1;
+            if (!FoundMM->FindFirstRevealableTileForNation(PS->NationId, TileId))
+            {
+                UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: No revealable tile for nation %d"), PS->NationId);
+                return false;
+            }
+
+            // Reveal the tile via MapManager
+            if (!FoundMM->RevealTile(TileId))
+            {
+                UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Failed to reveal tile %d"), TileId);
+                return false;
+            }
+
+            // All good; consume AP and advance days below
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: World not available"));
+            return false;
+        }
+    }
+
     PS->ActionPoints -= Def->ActionPointCost;
 
     // Advance days according to the action definition's DurationDays

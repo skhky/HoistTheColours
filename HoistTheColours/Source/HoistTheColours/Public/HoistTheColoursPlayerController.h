@@ -21,4 +21,8 @@ public:
     // Server -> Client: notify result
     UFUNCTION(Client, Reliable)
     void Client_NotifyActionResult(bool bSuccess, const FString& Reason);
+
+    // Debug: send an Investigation intent from console
+    UFUNCTION(Exec)
+    void Debug_SendInvestigation();
 };

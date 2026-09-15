@@ -30,3 +30,10 @@ void AHoistTheColoursPlayerController::Client_NotifyActionResult_Implementation(
 {
     UE_LOG(LogTemp, Log, TEXT("ActionResult: %s - %s"), bSuccess ? TEXT("Success") : TEXT("Fail"), *Reason);
 }
+
+void AHoistTheColoursPlayerController::Debug_SendInvestigation()
+{
+    FActionIntent Intent;
+    Intent.ActionType = EActionType::AT_Investigation;
+    Server_SubmitActionIntent(Intent);
+}
