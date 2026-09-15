@@ -27,6 +27,9 @@ public:
     // Reveal a tile (mark public). Returns true if changed to public.
     bool RevealTile(int32 TileId);
 
+    // Check if a specific tile id is revealable for the given nation
+    bool IsTileRevealableForNation(int32 TileId, int32 NationId) const;
+
     // Check whether a tile is revealable for a given nation/source (placeholder)
     bool CanRevealTile(int32 TileId, int32 NationId) const;
 

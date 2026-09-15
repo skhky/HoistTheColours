@@ -18,6 +18,10 @@ struct FActionIntent
     UPROPERTY()
     int32 TargetNationId = -1;
 
+    // Target tile id for tile-based actions (Investigation). -1 = none (use server auto-selection)
+    UPROPERTY()
+    int32 TargetTileId = -1;
+
     // Reserved for future minimal params; keep lightweight
     UPROPERTY()
     int64 GoldAmount = 0;

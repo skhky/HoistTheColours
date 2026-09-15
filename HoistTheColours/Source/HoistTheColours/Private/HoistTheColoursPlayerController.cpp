@@ -35,5 +35,7 @@ void AHoistTheColoursPlayerController::Debug_SendInvestigation()
 {
     FActionIntent Intent;
     Intent.ActionType = EActionType::AT_Investigation;
+    // default test: target tile id 2
+    Intent.TargetTileId = 2;
     Server_SubmitActionIntent(Intent);
 }

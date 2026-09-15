@@ -14,6 +14,15 @@ AMapManager::AMapManager()
     RootComponent = RootScene;
 }
 
+bool AMapManager::IsTileRevealableForNation(int32 TileId, int32 NationId) const
+{
+    const FTileInfo* Found = Tiles.Find(TileId);
+    if (!Found) return false;
+    if (Found->bIsPublic) return false;
+    // Additional checks (adjacency, ownership) can be added here.
+    return true;
+}
+
 bool AMapManager::FindFirstRevealableTileForNation(int32 NationId, int32& OutTileId) const
 {
     for (const auto& Pair : Tiles)

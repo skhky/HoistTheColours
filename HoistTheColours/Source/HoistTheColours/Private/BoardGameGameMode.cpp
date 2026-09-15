@@ -247,19 +247,44 @@ bool ABoardGameGameMode::ValidateAndExecuteAction(ABoardGamePlayerState* PS, con
                 return false;
             }
 
-            // Determine revealable tile (tile selection UI not implemented yet)
-            int32 TileId = -1;
-            if (!FoundMM->FindFirstRevealableTileForNation(PS->NationId, TileId))
+            // If client provided a target tile id, validate it; otherwise fall back to server auto-selection
+            int32 TileId = Intent.TargetTileId;
+            if (TileId >= 0)
             {
-                UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: No revealable tile for nation %d"), PS->NationId);
-                return false;
-            }
+                // Validate existence and revealable
+                if (!FoundMM->HasTile(TileId))
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Target tile %d does not exist"), TileId);
+                    return false;
+                }
 
-            // Reveal the tile via MapManager
-            if (!FoundMM->RevealTile(TileId))
+                if (!FoundMM->IsTileRevealableForNation(TileId, PS->NationId))
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Target tile %d not revealable for nation %d"), TileId, PS->NationId);
+                    return false;
+                }
+
+                if (!FoundMM->RevealTile(TileId))
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Failed to reveal tile %d"), TileId);
+                    return false;
+                }
+            }
+            else
             {
-                UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Failed to reveal tile %d"), TileId);
-                return false;
+                // Determine revealable tile (server auto-selection)
+                int32 AutoTileId = -1;
+                if (!FoundMM->FindFirstRevealableTileForNation(PS->NationId, AutoTileId))
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: No revealable tile for nation %d"), PS->NationId);
+                    return false;
+                }
+
+                if (!FoundMM->RevealTile(AutoTileId))
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("ValidateAndExecuteAction: Failed to reveal tile %d"), AutoTileId);
+                    return false;
+                }
             }
 
             // All good; consume AP and advance days below
