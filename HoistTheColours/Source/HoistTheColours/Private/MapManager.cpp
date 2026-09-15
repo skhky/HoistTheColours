@@ -59,7 +59,12 @@ void AMapManager::InitializeMap()
 
     UE_LOG(LogTemp, Log, TEXT("MapManager: Initialized %d tiles"), Tiles.Num());
 
-    // Replication handled in a later iteration
+    // Initialize replicated array to match initial tiles
+    ReplicatedTiles.Empty();
+    for (const auto& Pair : Tiles)
+    {
+        ReplicatedTiles.Add(Pair.Value);
+    }
 }
 
 bool AMapManager::HasTile(int32 TileId) const
@@ -80,8 +85,35 @@ bool AMapManager::RevealTile(int32 TileId)
     if (Found->bIsPublic) return false;
     Found->bIsPublic = true;
     UE_LOG(LogTemp, Log, TEXT("MapManager: Tile %d revealed"), TileId);
-    // Replication handled in a later iteration
+    // Update replicated array entry and mark dirty for replication
+    for (FTileInfo& RT : ReplicatedTiles)
+    {
+        if (RT.TileId == TileId)
+        {
+            RT.bIsPublic = true;
+            break;
+        }
+    }
+    // Force replication update
+    ForceNetUpdate();
     return true;
+}
+
+void AMapManager::OnRep_ReplicatedTiles()
+{
+    int32 PublicCount = 0;
+    for (const FTileInfo& Info : ReplicatedTiles)
+    {
+        if (Info.bIsPublic) ++PublicCount;
+    }
+    UE_LOG(LogTemp, Log, TEXT("MapManager (client): OnRep_ReplicatedTiles public=%d total=%d"), PublicCount, ReplicatedTiles.Num());
+}
+
+void AMapManager::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AMapManager, ReplicatedTiles);
 }
 
 bool AMapManager::CanRevealTile(int32 TileId, int32 NationId) const

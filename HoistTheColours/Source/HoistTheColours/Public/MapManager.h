@@ -45,5 +45,14 @@ protected:
     UPROPERTY(VisibleDefaultsOnly)
     USceneComponent* RootScene;
 
+    // Replicated array of tile infos to propagate bIsPublic to clients
+    UPROPERTY(ReplicatedUsing=OnRep_ReplicatedTiles)
+    TArray<FTileInfo> ReplicatedTiles;
+
+    UFUNCTION()
+    void OnRep_ReplicatedTiles();
+
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
     // (Replication of tile data will be implemented later)
 };
